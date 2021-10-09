@@ -59,7 +59,7 @@ Restart apparmor
 sudo service apparmor restart
 ```
 
-Initialize new instance
+# Initialize new MySQL instance
 
 ```bash
 sudo mysqld --initialize --user=mysql --datadir=/opt/second_server_data/
@@ -71,7 +71,7 @@ To find the new root password simply `tail or `vi` the `/var/log/mysql/error.log
 A temporary password is generated for root@localhost: abcdnewpassword
 ```
 
-We can now start MySQL
+# Start new MySQL instance
 
 ```bash
 sudo mysqld_safe --no-defaults --datadir=/opt/second_server_data/ --port=3315 --mysqlx=0 --socket=/var/run/mysqld/second_server.sock &
@@ -87,11 +87,36 @@ mysql --socket=/var/run/mysqld/second_server.sock -u root -p
 mysql -h 127.0.0.1 -P 3315 -u root -p
 ```
 
-Create new password
+Create new root password
 
 ```mysql
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password_here';
 FLUSH PRIVILEGES;
+```
+
+# Create new user
+
+```mysql
+CREATE USER 'wasmedge_user'@'localhost' IDENTIFIED BY 'your_password_here';
+GRANT ALL PRIVILEGES ON wasmedge_user . * TO 'wasmedge_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+# Create new database
+
+```mysql
+CREATE DATABASE wasmedge_db;
+use wasmedge_db;
+```
+
+# Create new table
+
+```mysql
+CREATE TABLE wasmedge_data(
+    wasmedge_id INT(6) NOT NULL AUTO_INCREMENT,
+    wasmedge_binary LONGBLOB NOT NULL,
+    PRIMARY KEY(wasmedge_id)
+);
 ```
 
 # Shutdown database
@@ -101,3 +126,7 @@ Please use the following command to shutdown this database instance
 ```bash
 sudo mysqladmin -h 127.0.0.1 -P 3315 -u root -p shutdown
 ```
+
+# References
+
+- https://medium.com/@omkarmanjrekar/running-multiple-mysql-instances-on-ubuntu-4af059aad5ae
