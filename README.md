@@ -23,7 +23,7 @@ sudo apt-get install -y mysql-server
 Create new data directory
 
 ```bash
-mkdir -p /opt/second_server_data/
+sudo mkdir -p /opt/second_server_data/
 ```
 
 Change permissions and ownership
@@ -62,7 +62,7 @@ sudo service apparmor restart
 # Initialize new MySQL instance
 
 ```bash
-sudo mysqld --initialize --user=mysql --datadir=/opt/second_server_data/
+sudo mysqld --initialize --user=mysql --datadir=/opt/second_server_data
 ```
 
 To find the new root password simply `tail` or `vi` the `/var/log/mysql/error.log` file 
@@ -75,6 +75,12 @@ You will notice a line such as the one below (which tells you the new password)
 
 ```
 A temporary password is generated for root@localhost: abcdnewpassword
+```
+
+# Secure the MySQL instance
+
+```bash
+sudo mysql_secure_installation --basedir=/opt/second_server_data
 ```
 
 # Start new MySQL instance
