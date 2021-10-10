@@ -65,7 +65,13 @@ sudo service apparmor restart
 sudo mysqld --initialize --user=mysql --datadir=/opt/second_server_data/
 ```
 
-To find the new root password simply `tail or `vi` the `/var/log/mysql/error.log` file and look for the following line
+To find the new root password simply `tail` or `vi` the `/var/log/mysql/error.log` file 
+
+```bash
+tail /var/log/mysql/error.log
+```
+
+You will notice a line such as the one below (which tells you the new password)
 
 ```
 A temporary password is generated for root@localhost: abcdnewpassword
