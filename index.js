@@ -34,7 +34,7 @@ app.use(bodyParser.raw({
 // TODO set up https/ssl using let's encrypt
 // TODO open port 8888 on machine (iptables UFW)
 // TODO port forward 8888 at gateway
-
+// TODO make sure to return bytes when performing a get because we are dealing with blob only
 
 const https = require('https');
 
