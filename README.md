@@ -1,4 +1,27 @@
-# MySQL
+# Use our ready-made MySQL service
+
+Good news!, if you would like persistent data in your wasmedge application, simply follow the usage examples below.
+
+# Usage
+
+## Endpoints
+
+###
+
+###
+
+###
+
+###
+
+
+---
+
+As mentioned above, this MySQL service is already set up and ready for your requests. If you would like to set up your own service (on your own hardware) please proceed to the next section called "Runing your own wasmedge-mysql".
+
+---
+
+# Run your own wasmedge-mysql - optional
 
 ## System requirements
 
@@ -132,31 +155,51 @@ ALTER USER 'wasmedge_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 
 FLUSH PRIVILEGES;
 ```
 
-# Implement SSL
-
-```bash
-sudo apt-get install -y certbot
-sudo certbot certonly --manual
-```
-
-Once the letsencrypt process is complete (certificates are placed in `/etc/letsencrypt`), then run the following to allow this application to access the new certificates.
-
-```bash
-sudo chown $USER:$USER -R /etc/letsencrypt
-```
-
-# Build
+# Fetch
 
 ```bash
 git clone https://github.com/second-state/wasmedge-mysql.git
 cd wasmedge-mysql
-npm build
+```
+
+# Create config (`.env`) file
+
+Open a new file called `.env`.
+
+```bash
+vi `.env`
+```
+
+Place the following configuration in that file and save.
+
+```bash
+server_name=rpc.ssvm.secondstate.io
+host=0.0.0.0
+port=8888
+
+db_host=localhost
+db_port=3315
+db_user=wasmedge_user
+db_password=your_password_here
+db_name=wasmedge_db
+```
+
+Automatically install the npm packages that ship with this build's package.json file.
+
+```bash
+npm install
 ```
 
 # Start
 
 ```bash
 node index.js
+```
+
+# Start using forever
+
+```bash
+forever start index.js
 ```
 
 ---

@@ -6,7 +6,7 @@ const app = express();
 app.use(helmet());
 
 require('dotenv').config();
-console.log("Testing dotenv config, server name is: " + process.env.server_name;);
+console.log("Testing dotenv config, server name is: " + process.env.server_name);
 
 var cors = require('cors');
 app.use(cors());
@@ -14,9 +14,11 @@ app.use(cors());
 const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: process.env.db_host,
+  port: process.env.db_port,
   user: process.env.db_user,
   password: process.env.db_password,
-  database: process.env.db_name
+  database: process.env.db_name,
+
 });
 connection.connect((err) => {
   if (err) throw err;
@@ -88,6 +90,17 @@ function performSqlQuery(string_query) {
 }
 
 // API endpoints
+
+// User just arriving at https://rpc.ssvm.secondstate.io:8888
+
+app.get('/', (req, res) => {
+    response = [{
+        "application": "wasmedge-mysql"
+    }, {
+        "usage_documentation:": "https://github.com/second-state/wasmedge-mysql/blob/main/README.md#usage"
+    }];
+    res.send(JSON.stringify(joey_response));
+});
 
 // POST i.e. Store data
 
