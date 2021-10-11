@@ -129,6 +129,8 @@ CREATE TABLE wasmedge_data(
 CREATE USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED BY 'your_password_here';
 GRANT ALL PRIVILEGES ON wasmedge_db . * TO 'wasmedge_remote_user'@'0.0.0.0';
 FLUSH PRIVILEGES;
+ALTER USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED WITH mysql_native_password BY 'your_password_here';
+FLUSH PRIVILEGES;
 ```
 
 # Shutdown database
