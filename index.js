@@ -94,25 +94,31 @@ function performSqlQuery(string_query) {
 // User just arriving at https://rpc.ssvm.secondstate.io:8888
 
 app.get('/', (req, res) => {
-    response = [{
-        "application": "wasmedge-mysql"
-    }, {
-        "usage_documentation:": "https://github.com/second-state/wasmedge-mysql/blob/main/README.md#usage"
-    }];
-    res.send(JSON.stringify(joey_response));
+  response = [{
+    "application": "wasmedge-mysql"
+  }, {
+    "usage_documentation:": "https://github.com/second-state/wasmedge-mysql/blob/main/README.md#usage"
+  }];
+  res.send(JSON.stringify(joey_response));
 });
 
 // POST i.e. Store data
 
 app.post('/api/store', bodyParser.raw(), (req, res) => {
-    console.log("Request body length:" + req.body.length);
+  console.log("Request body length:" + req.body.length);
   if (req.is('application/octet-stream') == 'application/octet-stream') {
-    var data_to_store = Uint8Array.from(req.body);
-    var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), " + data_to_store + ");";
-    performSqlQuery(sqlInsert).then((resultInsert) => {
-      console.log("1 record inserted at wasmedge_id: " + resultInsert.insertId);
-      res.end(resultInsert.insertId);
-    });
+    if (req.body.length > 0) {
+      var data_to_store = Uint8Array.from(req.body);
+      var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), " + data_to_store + ");";
+      performSqlQuery(sqlInsert).then((resultInsert) => {
+        console.log("1 record inserted at wasmedge_id: " + resultInsert.insertId);
+        res.end(resultInsert.insertId);
+      });
+    } else {
+      res.end("error: request body empty");
+    }
+  } else {
+    res.end("error: body must be application/octet-stream");
   }
 });
 
