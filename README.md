@@ -132,6 +132,20 @@ ALTER USER 'wasmedge_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 
 FLUSH PRIVILEGES;
 ```
 
+# Build
+
+```bash
+git clone https://github.com/second-state/wasmedge-mysql.git
+cd wasmedge-mysql
+npm build
+```
+
+# Start
+
+```bash
+node index.js
+```
+
 ---
 
 # Design discussion - number 3 currently in play
