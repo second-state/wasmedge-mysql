@@ -154,6 +154,7 @@ server_name=rpc.ssvm.secondstate.io
 host=0.0.0.0
 port=8888
 
+db_host=localhost
 db_port=3315
 db_user=wasmedge_user
 db_password=your_password_here
