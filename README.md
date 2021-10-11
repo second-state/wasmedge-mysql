@@ -106,14 +106,6 @@ ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_pas
 FLUSH PRIVILEGES;
 ```
 
-# Create new user
-
-```mysql
-CREATE USER 'wasmedge_user'@'localhost' IDENTIFIED BY 'your_password_here';
-GRANT ALL PRIVILEGES ON wasmedge_user . * TO 'wasmedge_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
 # Create new database
 
 ```mysql
@@ -129,6 +121,14 @@ CREATE TABLE wasmedge_data(
     wasmedge_binary LONGBLOB NOT NULL,
     PRIMARY KEY(wasmedge_id)
 );
+```
+
+# Create new user
+
+```mysql
+CREATE USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED BY 'your_password_here';
+GRANT ALL PRIVILEGES ON wasmedge_db . * TO 'wasmedge_remote_user'@'0.0.0.0';
+FLUSH PRIVILEGES;
 ```
 
 # Shutdown database
