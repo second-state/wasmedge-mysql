@@ -123,6 +123,8 @@ CREATE TABLE wasmedge_data(
 );
 ```
 
+# create new local user
+
 ```mysql
 CREATE USER 'wasmedge_user'@'localhost' IDENTIFIED BY 'your_password_here';
 GRANT ALL PRIVILEGES ON wasmedge_db . * TO 'wasmedge_user'@'localhost';
