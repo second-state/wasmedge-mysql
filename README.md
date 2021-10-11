@@ -4,9 +4,38 @@ Good news!, if you would like persistent data in your wasmedge application, simp
 
 # Usage
 
+The wasmedge-mysql API will accept valid secure HTTP requests. Whilst the primary use case is to allow Javascript developers to have persistence in their WasmEdge apps, there is nothing stopping you from storing and loading data (even for testing) using any software which is capable of making secure HTTP requests (i.e. Python, Curl, Ruby, PHP). Below, we only provide explicit code examples of using Curl and Javascript.
+
 ## Endpoints
 
-###
+### /api/store
+
+Store raw bytes and receive a UUID to access that data in the future
+
+#### Curl example
+
+```bash
+curl --location --request POST 'https://rpc.ssvm.secondstate.io:8888/api/store \
+--header 'Content-Type: application/octet-stream' \
+--data-binary '@/home/my_user/my_image_file_on_disk'
+```
+
+#### Javascript example
+
+```Javascript
+var data = "<file contents here>";
+
+var xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+xhr.addEventListener("readystatechange", function() {
+  if(this.readyState === 4) {
+    console.log(this.responseText);
+  }
+});
+xhr.open("POST", "https://rpc.ssvm.secondstate.io:8888/api/store");
+xhr.setRequestHeader("Content-Type", "application/octet-stream");
+xhr.send(data);
+```
 
 ###
 
