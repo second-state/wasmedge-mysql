@@ -135,6 +135,10 @@ FLUSH PRIVILEGES;
 
 ---
 
+# Remote access
+
+Accessing the database remotely will always require the caller to have a mysql client. Further, it will require that the caller stores the password. Both of these facts make native remote access not practicable in a shared environment. Instead, we are going to implement a simple API which will accept secure HTTP requests and perform MySQL read/write transactions on behalf of the caller.
+
 # Not recommended - create new remote user (optional - just for testing)
 
 ```mysql
