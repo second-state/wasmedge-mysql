@@ -123,7 +123,17 @@ CREATE TABLE wasmedge_data(
 );
 ```
 
-# Create new user
+```mysql
+CREATE USER 'wasmedge_user'@'localhost' IDENTIFIED BY 'your_password_here';
+GRANT ALL PRIVILEGES ON wasmedge_db . * TO 'wasmedge_user'@'localhost';
+FLUSH PRIVILEGES;
+ALTER USER 'wasmedge_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password_here';
+FLUSH PRIVILEGES;
+```
+
+---
+
+# Not recommended - create new remote user (optional - just for testing)
 
 ```mysql
 CREATE USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED BY 'your_password_here';
@@ -132,6 +142,17 @@ FLUSH PRIVILEGES;
 ALTER USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED WITH mysql_native_password BY 'your_password_here';
 FLUSH PRIVILEGES;
 ```
+# Not recommended - Test remote access
+
+Download the MySQL client from [dev.mysql.com](https://dev.mysql.com/doc/refman/8.0/en/mysql.html).
+
+Run the following command on a remote machine
+
+```bash
+mysql -P 3315 -u wasmedge_remote_user -h 27.33.80.26 -p
+```
+
+---
 
 # Shutdown database
 
