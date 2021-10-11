@@ -88,7 +88,7 @@ function performSqlQuery(string_query) {
 
 // API endpoints
 
-// STORE
+// POST i.e. Store data
 
 app.post('/api/store', bodyParser.raw(), (req, res) => {
   if (req.is('application/octet-stream') == 'application/octet-stream') {
@@ -101,11 +101,32 @@ app.post('/api/store', bodyParser.raw(), (req, res) => {
   }
 });
 
-// LOAD
+// GET i.e. Load data
 
 app.get('/api/load/:wasmedge_id', (req, res) => {
   var sqlSelect = "SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
   performSqlQuery(sqlSelect).then((result) => {
     res.end(result[0].wasm_binary);
+  });
+});
+
+// PUT i.e. Update data
+
+app.put('/api/update/:wasmedge_id', bodyParser.raw(), (req, res) => {
+  if (req.is('application/octet-stream') == 'application/octet-stream') {
+    var data_to_store = Uint8Array.from(req.body);
+    var sqlUpdate = "UPDATE wasmedge_data SET wasmedge_blob = " + data_to_store + " WHERE BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+    performSqlQuery(sqlUpdate).then((result) => {
+      res.end(req.params.wasmedge_id);
+    });
+  }
+});
+
+// DELETE i.e. Remove the data
+
+app.delete('/api/delete/:wasmedge_id', (req, res) => {
+  var sqlDelete = "DELETE from wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+  performSqlQuery(sqlDelete).then((result) => {
+    res.end(req.params.wasmedge_id);
   });
 });
