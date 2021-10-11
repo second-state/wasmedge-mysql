@@ -86,10 +86,10 @@ sudo mysql_secure_installation --basedir=/opt/second_server_data
 # Start new MySQL instance
 
 ```bash
-sudo mysqld_safe --no-defaults --datadir=/opt/second_server_data/ --port=3315 --mysqlx=0 --socket=/var/run/mysqld/second_server.sock &
+sudo mysqld_safe --no-defaults --datadir=/opt/second_server_data --port=3315 --mysqlx=0 --socket=/var/run/mysqld/second_server.sock &
 ```
 
-Logging in can be done via socket or via TCP
+Logging in, can be done via socket or via TCP
 
 ```bash
 mysql --socket=/var/run/mysqld/second_server.sock -u root -p
@@ -116,10 +116,9 @@ use wasmedge_db;
 # Create new table
 
 ```mysql
-CREATE TABLE wasmedge_data(
-    wasmedge_id INT(6) NOT NULL AUTO_INCREMENT,
-    wasmedge_binary LONGBLOB NOT NULL,
-    PRIMARY KEY(wasmedge_id)
+CREATE TABLE wasmedge_data (
+    wasmedge_id BINARY(16) PRIMARY KEY NOT NULL ,
+    wasmedge_blob LONGBLOB NOT NULL
 );
 ```
 
@@ -135,11 +134,13 @@ FLUSH PRIVILEGES;
 
 ---
 
-# Remote access
+# Design discussion - number 3 currently in play
+
+## 1) Direct remote access - not recommended!
 
 Accessing the database remotely will always require the caller to have a mysql client. Further, it will require that the caller stores the password. Both of these facts make native remote access not practicable in a shared environment. Instead, we are going to implement a simple API which will accept secure HTTP requests and perform MySQL read/write transactions on behalf of the caller.
 
-# Not recommended - create new remote user (optional - just for testing)
+You could create a new external user like this ...
 
 ```mysql
 CREATE USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED BY 'your_password_here';
@@ -148,7 +149,7 @@ FLUSH PRIVILEGES;
 ALTER USER 'wasmedge_remote_user'@'0.0.0.0' IDENTIFIED WITH mysql_native_password BY 'your_password_here';
 FLUSH PRIVILEGES;
 ```
-# Not recommended - Test remote access
+You could test remote access like this ...
 
 Download the MySQL client from [dev.mysql.com](https://dev.mysql.com/doc/refman/8.0/en/mysql.html).
 
@@ -157,7 +158,36 @@ Run the following command on a remote machine
 ```bash
 mysql -P 3315 -u wasmedge_remote_user -h 27.33.80.26 -p
 ```
+However, the above direct remote access solution means that all users are sharing a common username and password.
 
+## 2) 3rd-party remote access - not ideal
+
+There are many ways to expose MySQL over HTTP using 3rd-party software like [aceql](https://github.com/kawansoft/aceql-http). However these also require that you share/give passwords out to end users.
+
+## 3) In-house key:value store - working on this
+
+One way to store data would be to allow the caller to store anything as a byte array i.e. a blob.
+
+The following convention would need to be followed:
+- a user can make a secure HTTP request to store a blob i.e. anything as a byte array
+- the user is responsible encoding/decoding their data type to byte array and back again (depending on their application)
+- this allows us to store images natively etc (as apposed to only allowing JSON or String)
+- the API will always return a valid UUID when data is stored
+- the user will load their data using the UUID which the database provided
+
+Here are some examples of the internal SQL operations
+
+Storing a blob
+```SQL
+INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), the_byte_array);
+```
+Returns
+994d926e-2a3e-11ec-a87d-08719041559b
+
+Loading a blob
+```SQL
+SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = '994d926e-2a3e-11ec-a87d-08719041559b';
+```
 ---
 
 # Shutdown database
