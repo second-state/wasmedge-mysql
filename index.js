@@ -6,6 +6,7 @@ const app = express();
 app.use(helmet());
 
 require('dotenv').config();
+console.log("Testing dotenv config, server name is: " + process.env.server_name;);
 
 var cors = require('cors');
 app.use(cors());
@@ -106,7 +107,7 @@ app.post('/api/store', bodyParser.raw(), (req, res) => {
 app.get('/api/load/:wasmedge_id', (req, res) => {
   var sqlSelect = "SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
   performSqlQuery(sqlSelect).then((result) => {
-    res.end(result[0].wasm_binary);
+    res.send(Buffer.from(result[0].wasmedge_blob));
   });
 });
 

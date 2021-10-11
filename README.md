@@ -132,6 +132,19 @@ ALTER USER 'wasmedge_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 
 FLUSH PRIVILEGES;
 ```
 
+# Implement SSL
+
+```bash
+sudo apt-get install -y certbot
+sudo certbot certonly --manual
+```
+
+Once the letsencrypt process is complete (certificates are placed in `/etc/letsencrypt`), then run the following to allow this application to access the new certificates.
+
+```bash
+sudo chown $USER:$USER -R /etc/letsencrypt
+```
+
 # Build
 
 ```bash
