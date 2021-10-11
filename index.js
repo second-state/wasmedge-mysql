@@ -105,7 +105,7 @@ app.get('/', (req, res) => {
 // POST i.e. Store data
 
 app.post('/api/store', bodyParser.raw(), (req, res) => {
-    console.log(req);
+    console.log("Request body length:" + req.body.length);
   if (req.is('application/octet-stream') == 'application/octet-stream') {
     var data_to_store = Uint8Array.from(req.body);
     var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), " + data_to_store + ");";
