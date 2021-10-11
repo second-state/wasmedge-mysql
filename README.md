@@ -1,4 +1,27 @@
-# MySQL
+# Use our ready-made MySQL service
+
+Good news!, if you would like persistent data in your wasmedge application, simply follow the usage examples below.
+
+# Usage
+
+## Endpoints
+
+###
+
+###
+
+###
+
+###
+
+
+---
+
+As mentioned above, this MySQL service is already set up and ready for your requests. If you would like to set up your own service (on your own hardware) please proceed to the next section called "Runing your own wasmedge-mysql".
+
+---
+
+# Run your own wasmedge-mysql - optional
 
 ## System requirements
 
