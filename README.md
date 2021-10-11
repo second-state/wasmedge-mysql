@@ -123,7 +123,7 @@ CREATE TABLE wasmedge_data(
 );
 ```
 
-# create new local user
+# Create new local user
 
 ```mysql
 CREATE USER 'wasmedge_user'@'localhost' IDENTIFIED BY 'your_password_here';
