@@ -88,13 +88,24 @@ function performSqlQuery(string_query) {
 
 // API endpoints
 
+// STORE
+
 app.post('/api/store', bodyParser.raw(), (req, res) => {
   if (req.is('application/octet-stream') == 'application/octet-stream') {
     var data_to_store = Uint8Array.from(req.body);
-    INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), data_to_store);
+    var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), " + data_to_store + ");";
     performSqlQuery(sqlInsert).then((resultInsert) => {
-      console.log("1 record inserted at wasm_id: " + resultInsert.insertId);
+      console.log("1 record inserted at wasmedge_id: " + resultInsert.insertId);
       res.end(resultInsert.insertId);
     });
   }
+});
+
+// LOAD
+
+app.get('/api/load/:wasmedge_id', (req, res) => {
+  var sqlSelect = "SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+  performSqlQuery(sqlSelect).then((result) => {
+    res.end(result[0].wasm_binary);
+  });
 });
