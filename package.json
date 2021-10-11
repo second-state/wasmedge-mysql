@@ -1,0 +1,26 @@
+{
+  "name": "wasmedge-mysql",
+  "version": "1.0.0",
+  "description": "An API for WasmEdge applications to store and load data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/second-state/wasmedge-mysql.git"
+  },
+  "keywords": [
+    "wasmedge",
+    "wasm",
+    "webassembly",
+    "secondstate",
+    "mysql"
+  ],
+  "author": "tpmccallum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/second-state/wasmedge-mysql/issues"
+  },
+  "homepage": "https://github.com/second-state/wasmedge-mysql#readme"
+}
