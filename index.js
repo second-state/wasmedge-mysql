@@ -1,4 +1,6 @@
 // Packages
+// UUID
+const {v4: uuidv4} = require('uuid');
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const express = require('express');
@@ -82,9 +84,12 @@ function performSqlQuery(string_query) {
   return new Promise(function(resolve, reject) {
     connection.query(string_query, function(err, resultSelect) {
       if (err) {
-        res.status(400).send("Perhaps a bad request, or database is not running");
-      }
-      resolve(resultSelect);
+        console.log("Error performSqlQuery: " + err);
+        //res.status(400).send("Perhaps a bad request, or database is not running");
+      } else {
+        console.log("Success performSqlQuery: " + resultSelect);
+    }
+    resolve(resultSelect);
     });
   });
 }
@@ -109,10 +114,13 @@ app.post('/api/store', bodyParser.raw(), (req, res) => {
   if (req.is('application/octet-stream') == 'application/octet-stream') {
     if (req.body.length > 0) {
       var data_to_store = Uint8Array.from(req.body);
-      var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN(UUID()), " + data_to_store + ");";
+      var new_uuid = uuidv4();
+      var sqlInsert = "INSERT INTO wasmedge_data(wasmedge_id, wasmedge_blob) VALUES(UUID_TO_BIN('" + new_uuid + "'), '" + data_to_store + "');";
+      console.log("SQL\n" + sqlInsert);
       performSqlQuery(sqlInsert).then((resultInsert) => {
+        console.log("Full resultInsert: " + JSON.stringify(resultInsert));
         console.log("1 record inserted at wasmedge_id: " + resultInsert.insertId);
-        res.end(resultInsert.insertId);
+        res.send(resultInsert.insertId.toString());
       });
     } else {
       res.end("error: request body empty");
@@ -125,7 +133,7 @@ app.post('/api/store', bodyParser.raw(), (req, res) => {
 // GET i.e. Load data
 
 app.get('/api/load/:wasmedge_id', (req, res) => {
-  var sqlSelect = "SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+  var sqlSelect = "SELECT wasmedge_blob FROM wasmedge_data where BIN_TO_UUID(wasmedge_id) = '" + req.params.wasmedge_id + "';";
   performSqlQuery(sqlSelect).then((result) => {
     res.send(Buffer.from(result[0].wasmedge_blob));
   });
@@ -136,7 +144,7 @@ app.get('/api/load/:wasmedge_id', (req, res) => {
 app.put('/api/update/:wasmedge_id', bodyParser.raw(), (req, res) => {
   if (req.is('application/octet-stream') == 'application/octet-stream') {
     var data_to_store = Uint8Array.from(req.body);
-    var sqlUpdate = "UPDATE wasmedge_data SET wasmedge_blob = " + data_to_store + " WHERE BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+    var sqlUpdate = "UPDATE wasmedge_data SET wasmedge_blob = '" + data_to_store + "' WHERE BIN_TO_UUID(wasmedge_id) = '" + req.params.wasmedge_id + "';";
     performSqlQuery(sqlUpdate).then((result) => {
       res.end(req.params.wasmedge_id);
     });
@@ -146,7 +154,7 @@ app.put('/api/update/:wasmedge_id', bodyParser.raw(), (req, res) => {
 // DELETE i.e. Remove the data
 
 app.delete('/api/delete/:wasmedge_id', (req, res) => {
-  var sqlDelete = "DELETE from wasmedge_data where BIN_TO_UUID(wasmedge_id) = " + req.params.wasmedge_id + ";";
+  var sqlDelete = "DELETE from wasmedge_data where BIN_TO_UUID(wasmedge_id) = '" + req.params.wasmedge_id + "';";
   performSqlQuery(sqlDelete).then((result) => {
     res.end(req.params.wasmedge_id);
   });

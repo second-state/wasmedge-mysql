@@ -169,8 +169,10 @@ use wasmedge_db;
 
 ```mysql
 CREATE TABLE wasmedge_data (
-    wasmedge_id BINARY(16) PRIMARY KEY NOT NULL ,
-    wasmedge_blob LONGBLOB NOT NULL
+    wasmedge_int INT(6) NOT NULL AUTO_INCREMENT,
+    wasmedge_id BINARY(16) NOT NULL,
+    wasmedge_blob LONGBLOB NOT NULL,
+    PRIMARY KEY (wasmedge_int)
 );
 ```
 
